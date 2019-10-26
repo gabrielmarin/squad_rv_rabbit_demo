@@ -39,9 +39,9 @@ namespace XP.RabbitMq.Demo.Producer
                 foreach (var (buying, selling) in GenerateRandomTradePairs())
                 {
                     channel.BasicPublish(exchange: "", routingKey: "trades_queue", basicProperties: null, body: Encoding.UTF8.GetBytes(JsonSerializer.Serialize(buying)));
-                    Log.Information(buying.ToString());
+                    //Log.Information(buying.ToString());
                     channel.BasicPublish(exchange: "", routingKey: "trades_queue", basicProperties: null, body: Encoding.UTF8.GetBytes(JsonSerializer.Serialize(selling)));
-                    Log.Information(selling.ToString());
+                    //Log.Information(selling.ToString());
                 }
             }
 

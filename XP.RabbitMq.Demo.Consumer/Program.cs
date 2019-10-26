@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -28,12 +30,11 @@ namespace XP.RabbitMq.Demo.Consumer
                 {
                     var body = ea.Body;
                     var trade = JsonSerializer.Deserialize<Trade>(Encoding.UTF8.GetString(body));
-                    Console.WriteLine(" [x] Received {0}", trade.ToString());
+                    Console.WriteLine(" [x] Received {0}", trade);
+                    channel.BasicAck(ea.DeliveryTag, false);
                 };
 
-                channel.BasicConsume(queue: "trades_queue",
-                    autoAck: true,
-                    consumer: consumer);
+                channel.BasicConsume("trades_queue", false, consumer);
 
                 Console.WriteLine(" Press [enter] to exit.");
                 Console.ReadLine();
