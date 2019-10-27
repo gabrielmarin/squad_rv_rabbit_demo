@@ -24,6 +24,7 @@ namespace XP.RabbitMq.Demo.Consumer
                     exclusive: false,
                     autoDelete: false,
                     arguments: null);
+                channel.BasicQos(0, 1, false);
 
                 var consumer = new EventingBasicConsumer(channel);
                 consumer.Received += (model, ea) =>

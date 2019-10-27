@@ -1,7 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="2.9.2" />
+    <PackageReference Include="SimpleInjector" Version="4.7.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\XP.RabbitMq.Demo.Domain\XP.RabbitMq.Demo.Domain.csproj" />
+    <ProjectReference Include="..\XP.RabbitMq.Demo.Infra.Data\XP.RabbitMq.Demo.Infra.Data.csproj" />
+  </ItemGroup>
 
 </Project>
