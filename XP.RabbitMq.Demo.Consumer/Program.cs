@@ -31,10 +31,9 @@ namespace XP.RabbitMq.Demo.Consumer
                     var body = ea.Body;
                     var trade = JsonSerializer.Deserialize<Trade>(Encoding.UTF8.GetString(body));
                     Console.WriteLine(" [x] Received {0}", trade);
-                    channel.BasicAck(ea.DeliveryTag, false);
                 };
 
-                channel.BasicConsume("trades_queue", false, consumer);
+                channel.BasicConsume("trades_queue", true, consumer);
 
                 Console.WriteLine(" Press [enter] to exit.");
                 Console.ReadLine();
