@@ -26,22 +26,22 @@ namespace XP.RabbitMq.Demo.Producer
                 .CreateLogger();
 
             Log.Information("Publishing trades...");
+            const string ExchangeName = "trades_exchange";
+            const string TradesQueueName = "trades_queue";
             var factory = new ConnectionFactory() { HostName = "localhost", UserName = "guest", Password = "guest"};
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
-                channel.QueueDeclare(queue: "trades_queue",
-                    durable: false,
-                    exclusive: false,
-                    autoDelete: false,
-                    arguments: null);
-                
+                channel.ExchangeDeclare(ExchangeName, ExchangeType.Direct);
+                channel.QueueDeclare(TradesQueueName, true, false, false);
+                channel.QueueBind(TradesQueueName, ExchangeName, TradesQueueName);
+
                 foreach (var (buying, selling) in GenerateRandomTradePairs())
                 {
-                    channel.BasicPublish(exchange: "", routingKey: "trades_queue", basicProperties: null, body: Encoding.UTF8.GetBytes(JsonSerializer.Serialize(buying)));
-                    //Log.Information(buying.ToString());
-                    channel.BasicPublish(exchange: "", routingKey: "trades_queue", basicProperties: null, body: Encoding.UTF8.GetBytes(JsonSerializer.Serialize(selling)));
-                    //Log.Information(selling.ToString());
+                    channel.BasicPublish(ExchangeName, TradesQueueName, body: Encoding.UTF8.GetBytes(JsonSerializer.Serialize(buying)));
+                    Log.Information(buying.ToString());
+                    channel.BasicPublish(ExchangeName, TradesQueueName, body: Encoding.UTF8.GetBytes(JsonSerializer.Serialize(selling)));
+                    Log.Information(selling.ToString());
                 }
             }
 
@@ -70,7 +70,7 @@ namespace XP.RabbitMq.Demo.Producer
                     Client = buyingTrade.Client,
                     Symbol = buyingTrade.Symbol,
                     Price = prices.RandomItem(),
-                    Quantity = random.Next(10, buyingTrade.Quantity + 1) * -1
+                    Quantity = random.Next(Convert.ToInt32(buyingTrade.Quantity * 0.8), buyingTrade.Quantity + 1) * -1
                 };
                 
                 yield return Tuple.Create(buyingTrade, sellingTrade);

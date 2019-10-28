@@ -8,7 +8,7 @@
         public int Quantity { get; set; }
 
 
-        public override string ToString() => $"{Client} {(Quantity < 0 ? "Selling" : "Buying")} {Quantity}@{Price:C}";
+        public override string ToString() => $"{Client} {(Quantity < 0 ? "Selling" : "Buying")} {Symbol} {Quantity}@{Price:C}";
 
     }
 }

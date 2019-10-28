@@ -13,7 +13,7 @@ namespace XP.RabbitMq.Demo.CrossCutting.IoC
         {
             var container = new Container();
 
-            container.RegisterSingleton(() => new MongoClient("mongodb://localhost:27017"));
+            container.RegisterSingleton<IMongoClient>(() => new MongoClient("mongodb://localhost:27017"));
 
             container.Register<IAvgCostRepository, AvgCostRepository>();
 

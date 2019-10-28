@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\XP.RabbitMq.Demo.CrossCutting.IoC\XP.RabbitMq.Demo.CrossCutting.IoC.csproj" />
     <ProjectReference Include="..\XP.RabbitMq.Demo.Domain\XP.RabbitMq.Demo.Domain.csproj" />
   </ItemGroup>
 
