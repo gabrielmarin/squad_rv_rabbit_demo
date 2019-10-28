@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using XP.RabbitMq.Demo.Domain;
@@ -33,6 +35,28 @@ namespace XP.RabbitMq.Demo.Infra.Data
                 .PushEach(x => x.History, avgCost.History);
 
             var result = await _collection.UpdateOneAsync(x => x.Customer == avgCost.Customer && x.Symbol == avgCost.Symbol, updDef, updOpts);
+            return result.IsAcknowledged;
+        }
+
+        public async Task<bool> SaveOrUpdateManyAsync(IEnumerable<AvgCost> avgCosts)
+        {
+            var bulkList = new List<WriteModel<AvgCost>>(avgCosts.Count());
+            foreach (var avgCost in avgCosts)
+            {
+                var updDef = new UpdateDefinitionBuilder<AvgCost>()
+                    .SetOnInsert(x => x.Customer, avgCost.Customer)
+                    .SetOnInsert(x => x.Symbol, avgCost.Symbol)
+                    .Set(x => x.Price, avgCost.Price)
+                    .Set(x => x.Quantity, avgCost.Quantity)
+                    .PushEach(x => x.History, avgCost.History);
+
+                var filterBuilder = Builders<AvgCost>.Filter;
+                var filterDef = filterBuilder.And(filterBuilder.Eq(x => x.Customer, avgCost.Customer),
+                    filterBuilder.Eq(x => x.Symbol, avgCost.Symbol));
+                bulkList.Add(new UpdateOneModel<AvgCost>(filterDef, updDef){IsUpsert = true});
+            }
+
+            var result = await _collection.BulkWriteAsync(bulkList);
             return result.IsAcknowledged;
         }
 

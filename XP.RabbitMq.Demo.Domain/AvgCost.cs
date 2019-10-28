@@ -14,5 +14,10 @@ namespace XP.RabbitMq.Demo.Domain
         public decimal Price { get; set; }
         public int Quantity { get; set; }
         public IEnumerable<Trade> History { get; set; }
+
+
+        public string Key() => $"{Customer}:{Symbol}";
+        public override string ToString()
+            => $"{Customer} Avg Cost is {Price:C} for {Symbol}";
     }
 }
